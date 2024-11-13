@@ -1,14 +1,20 @@
-import { PrismaClient } from '@prisma/client';
+/**
+ * Prisma ORM for Database
+ */
 
-let prisma: PrismaClient;
+import { PrismaClient } from "@prisma/client";
+// orgiinal Implementation Start
+//const prisma = new PrismaClient();
+// orgiinal Implementation Start
 
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient();
-} else {
-  if (!global.prisma) {
-    global.prisma = new PrismaClient();
-  }
-  prisma = global.prisma;
+// Alternative Implementation reuse connection
+const prismaClientSingleton = () => {
+    return new PrismaClient()
 }
 
+declare global {
+    var prismaGlobal: undefined | ReturnType<typeof prismaClientSingleton>
+}
+const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
 export default prisma;
+if (process.env.NODE_ENV !== 'production') globalThis.prismaGlobal = prisma
