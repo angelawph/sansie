@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 
 //import Hero from "@/components/event/Hero";
 import Questions from "@/components/event/Questions";
+import QuestionsSWR from "@/components/event/QuestionsSWR";
 import QuestionForm from "@/components/event/QuestionForm";
 //import { Question } from "@prisma/client";
 
@@ -94,11 +95,17 @@ export default async function Page({ params }) {
 					<Typography variant="h4" color="inherit">
 						{event?.title}
 					</Typography>
-
-					<Questions event={event} questions={questions} params={params} />
 					<QuestionForm event={event} eventid={eventid} />
+					<QuestionsSWR event={event} params={params} />
+					
 				</Container>
 			</Box>
 		</Wrapper>
 	);
 }
+
+
+/*
+<Questions event={event} questions={questions} params={params} />
+
+*/

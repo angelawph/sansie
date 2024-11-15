@@ -138,11 +138,39 @@ export async function POST(request, { params }) {
  */
 export async function GET(request, { params }) {
 	const status = 200;
-	let message = "hello";
+
+	let message = "not-run";
 	let outcome = 0; // 0: unprocessed, 1: no perms, 2: error, 3: normal completion
 	let items = [];
 
 	const { eventid } = await params;
+
+	let questions = [];
+	const valid_event = await prisma.event.findFirst({
+		where: {
+			code: eventid,
+		},
+	});
+	if (valid_event) {
+		message = "success";
+		outcome = 3;
+		items = await prisma.question.findMany({
+			where: {
+				eventId: valid_event.id,
+			},
+			orderBy: [
+				{
+					answered: "asc",
+				},
+				{
+					votes: "desc",
+				},
+				{
+					created: "asc",
+				},
+			],
+		});
+	}
 
 	return NextResponse.json({ status, message, outcome, items });
 }

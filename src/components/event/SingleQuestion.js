@@ -8,7 +8,7 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Checkbox from "@mui/material/Checkbox";
 
-export default function SingleQuestion({event, questions, question}) {
+export default function SingleQuestion({event, question}) {
 	const [answered, setAnswered] = React.useState(question.answered);
 
 	const toggleAnswerStatus = async (newstatus) => {
@@ -32,6 +32,7 @@ export default function SingleQuestion({event, questions, question}) {
 				switch (response_content.outcome) {
 					case 3:
 						console.log("Question Answer Status Toggled");
+						//location.reload(); 
 						break;
 					default:
 						alert(response_content.outcome);
