@@ -143,7 +143,7 @@ export default function SingleQuestion({ event, question }) {
 									<>
 										{question.offline ? (
 											<Button variant="text" onClick={toggleOfflineStatus}>
-												Put back
+												Answer Live
 											</Button>
 										) : (
 											<Button variant="text" onClick={toggleOfflineStatus}>

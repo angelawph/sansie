@@ -99,7 +99,7 @@ export default function QuestionsSWR({ event, params }) {
 										mb: 2,
 									}}
 								>
-									<Typography variant="h6">Questions to be taken Offline</Typography>
+									<Typography variant="h6">Questions Answered Offline</Typography>
 									<List
 										sx={{
 											py: 2,
