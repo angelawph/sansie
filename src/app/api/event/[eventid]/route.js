@@ -57,11 +57,8 @@ export async function PATCH(request, { params }) {
 
 	outcome = 1;
 	message = "no-perms";
-	const { answered, question } = await request.json();
-	let answered_value = false;
-	if (answered == "yes") {
-		answered_value = true;
-	}
+	const { answered, question, patch_method } = await request.json();
+
 	const valid_event = await prisma.event.findFirst({
 		where: {
 			code: eventid,
@@ -70,25 +67,55 @@ export async function PATCH(request, { params }) {
 	if (valid_event) {
 		outcome = 2;
 		message = "valid-event";
-		const question_updated = await prisma.question.update({
-			data: {
-				answered: answered_value,
-			},
+
+		const valid_question = await prisma.question.findFirst({
 			where: {
 				id: question,
 			},
 		});
-		if (question_updated) {
-			outcome = 3;
-			message = "success";
-			items.push(question_updated);
+		if (valid_question) {
+			message = "valid-question";
+			if (patch_method == "offline") {
+				const question_updated = await prisma.question.update({
+					data: {
+						offline: !valid_question.offline,
+					},
+					where: {
+						id: valid_question.id,
+					},
+				});
+				if (question_updated) {
+					outcome = 3;
+					message = "success";
+					items.push(question_updated);
+				}
+			} else {
+				// set question to answered
+				let answered_value = false;
+				if (answered == "yes") {
+					answered_value = true;
+				}
+				const question_updated = await prisma.question.update({
+					data: {
+						answered: answered_value,
+					},
+					where: {
+						id: valid_question.id,
+					},
+				});
+				if (question_updated) {
+					outcome = 3;
+					message = "success";
+					items.push(question_updated);
+				}
+			}
 		}
 	}
 	return NextResponse.json({ status, message, outcome, items });
 }
 
 /**
- * Creating a new event
+ * Creates a new Question
  * @param request
  * @returns
  */
@@ -132,7 +159,7 @@ export async function POST(request, { params }) {
 }
 
 /**
- * Fetches all favourites
+ * Fetches all the questions for an event
  * @param request
  * @returns
  */

@@ -19,6 +19,7 @@ export default function QuestionsSWR({ event, params }) {
 
 	const [unanswered, setUnanswered] = React.useState([]);
 	const [answered, setAnswered] = React.useState([]);
+	const [offline, setOffline] = React.useState([]);
 	const [loading, setLoading] = React.useState(false);
 
 	const fetcher = (url) => {
@@ -31,15 +32,19 @@ export default function QuestionsSWR({ event, params }) {
 
 				let answered_questions = [];
 				let unanswered_questions = [];
+				let offline_questions = [];
 				for (var i = 0; i < res.data.items.length; i++) {
-					if (res.data.items[i].answered || res.data.items[i].offline) {
+					if (res.data.items[i].answered) {
 						answered_questions.push(res.data.items[i]);
+					} else if (res.data.items[i].offline) {
+						offline_questions.push(res.data.items[i]);
 					} else {
 						unanswered_questions.push(res.data.items[i]);
 					}
 				}
 				setAnswered(answered_questions);
 				setUnanswered(unanswered_questions);
+				setOffline(offline_questions);
 				setItems(res.data.items);
 			}
 			setLoading(false);
@@ -48,7 +53,9 @@ export default function QuestionsSWR({ event, params }) {
 	};
 
 	const api_endpoint = "/api/event/" + event.code;
-	const { data, error, isLoading } = useSWR(api_endpoint, fetcher, { refreshInterval: 300 });
+	const { data, error, isLoading } = useSWR(api_endpoint, fetcher, {
+		refreshInterval: 300,
+	});
 
 	return (
 		<Suspense fallback={<LinearProgress />}>
@@ -62,9 +69,7 @@ export default function QuestionsSWR({ event, params }) {
 										mb: 2,
 									}}
 								>
-									<Typography variant="h6">
-										Questions
-									</Typography>
+									<Typography variant="h6">Questions</Typography>
 									<List
 										sx={{
 											py: 2,
@@ -87,15 +92,39 @@ export default function QuestionsSWR({ event, params }) {
 									No Questions
 								</Alert>
 							)}
+
+							{offline.length ? (
+								<Box
+									sx={{
+										mb: 2,
+									}}
+								>
+									<Typography variant="h6">Questions to be taken Offline</Typography>
+									<List
+										sx={{
+											py: 2,
+										}}
+									>
+										{offline.map((item) => (
+											<SingleQuestion
+												event={event}
+												key={item.id}
+												question={item}
+											/>
+										))}
+									</List>
+								</Box>
+							) : (
+								<></>
+							)}
+
 							{answered.length ? (
 								<Box
 									sx={{
 										mb: 2,
 									}}
 								>
-									<Typography variant="h6">
-										Answered
-									</Typography>
+									<Typography variant="h6">Answered</Typography>
 									<List
 										sx={{
 											py: 2,
