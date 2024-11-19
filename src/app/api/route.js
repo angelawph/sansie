@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
  * @param request
  * @returns
  */
-export async function POST(request) {
+export async function PATCH(request) {
 	const status = 200;
 	let message = "unprocessed";
 	let outcome = 0; // 0: unprocessed, 1: no perms, 2: error, 3: normal completion
@@ -19,15 +19,54 @@ export async function POST(request) {
 }
 
 /**
- * Fetches all favourites
+ * Renders all the events
  * @param request
  * @returns
  */
 export async function GET(request) {
 	const status = 200;
-	let message = "hello";
+
+	let message = "not-run";
 	let outcome = 0; // 0: unprocessed, 1: no perms, 2: error, 3: normal completion
-	let items = [];
+
+	const q = request.nextUrl.searchParams.get("q");
+
+	console.log("q is: " + q);
+
+	message = "success";
+	outcome = 3;
+
+	const items = await prisma.event.findMany({
+		include: {
+			questions: true,
+		},
+		where: {
+			deleted: false,
+			...(
+				q ? { 
+					OR: [
+						{
+							code: {
+								contains: q,
+								mode: 'insensitive',
+							},
+						},
+						{
+							title: {
+								contains: q,
+								mode: 'insensitive',
+							},
+						},
+					]
+				} : {
+				}
+			),
+		},
+		orderBy: {
+			created: "desc",
+		},
+	});
 
 	return NextResponse.json({ status, message, outcome, items });
 }
+

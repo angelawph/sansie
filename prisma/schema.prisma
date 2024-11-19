@@ -27,6 +27,7 @@ model Event {
   code      String
   questions Question[] @relation("QuestionRefEvent")
   created   DateTime   @default(now())
+  deleted   Boolean    @default(false)
 }
 
 model Question {
@@ -38,4 +39,5 @@ model Question {
   created  DateTime @default(now())
   answered Boolean  @default(false)
   offline  Boolean  @default(false)
+  deleted   Boolean    @default(false)
 }

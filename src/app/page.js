@@ -24,13 +24,13 @@ export async function generateMetadata(params) {
 }
 
 export default async function Page() {
-	const eventsData = getEvents();
-	const [events] = await Promise.all([eventsData]);
+	//const eventsData = getEvents();
+	//const [events] = await Promise.all([eventsData]);
 
 	return (
 		<Wrapper>
 			<Hero />
-			<Events events={events} />
+			<Events />
 		</Wrapper>
 	);
 }
