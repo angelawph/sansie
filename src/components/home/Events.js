@@ -48,7 +48,7 @@ export default function Events() {
 				
 				*/
 				setItems(res.data.items);
-				console.log('Total events: ' + res.data.items.length);
+				console.log("Total events: " + res.data.items.length);
 			}
 			setLoading(false);
 			return res.data;
@@ -87,7 +87,8 @@ export default function Events() {
 										xl: "50vw",
 									},
 									backgroundColor: "white",
-									opacity: "0.75",
+									borderRadius: '0.75rem',
+									opacity: "0.85",
 									color: "white",
 									position: "absolute",
 									left: "50%",
@@ -107,6 +108,10 @@ export default function Events() {
 											component={Link}
 											href={"/events/" + item.code}
 											key={item.id}
+											sx={{
+												color: "black",
+											}}
+											divider
 										>
 											<ListItemIcon>
 												<svg
@@ -120,7 +125,7 @@ export default function Events() {
 													<path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z" />
 												</svg>
 											</ListItemIcon>
-											<ListItemText primary={item.title} />
+											<ListItemText primary={<strong>{item.title}</strong>} />
 										</ListItem>
 									))}
 								</List>
